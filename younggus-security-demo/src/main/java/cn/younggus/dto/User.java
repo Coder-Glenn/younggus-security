@@ -1,6 +1,9 @@
 package cn.younggus.dto;
 
 import com.fasterxml.jackson.annotation.JsonView;
+import org.hibernate.validator.constraints.NotBlank;
+
+import java.util.Date;
 
 /**
  * @author Glenn.Zheng
@@ -16,9 +19,23 @@ public class User {
     public interface UserSimpleView {};
     public interface UserDetailView extends UserSimpleView {};
 
+    private String id;
+
     private String username;
 
+    @NotBlank
     private String password;
+
+    private Date birthday;
+
+    @JsonView(UserSimpleView.class)
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
 
     @JsonView(UserSimpleView.class)
     public String getUsername() {
@@ -36,5 +53,14 @@ public class User {
 
     public void setPassword(String password) {
         this.password = password;
+    }
+
+    @JsonView(UserSimpleView.class)
+    public Date getBirthday() {
+        return birthday;
+    }
+
+    public void setBirthday(Date birthday) {
+        this.birthday = birthday;
     }
 }

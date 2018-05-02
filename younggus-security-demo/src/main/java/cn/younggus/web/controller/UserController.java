@@ -7,11 +7,15 @@ import org.apache.commons.lang.builder.ReflectionToStringBuilder;
 import org.apache.commons.lang.builder.ToStringStyle;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.validation.Valid;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -22,6 +26,28 @@ import java.util.List;
 @RestController //标明此controller用于提供Rest API
 @RequestMapping(value = "/user")
 public class UserController {
+
+    /**
+     * we will use @Valid and BindingResult together,
+     * valid result will collected by BindingResult
+     * @param user
+     * @param errors
+     * @return
+     */
+    @PostMapping
+    public User crete(@Valid @RequestBody User user, BindingResult errors) {
+
+        if (errors.hasErrors()) {
+            errors.getAllErrors().stream().forEach(error -> System.out.println(error.getDefaultMessage() ));
+        }
+
+        System.out.println(user.getId());
+        System.out.println(user.getUsername());
+        System.out.println(user.getPassword());
+        System.out.println(user.getBirthday());
+        user.setId("1");
+        return user;
+    }
 
 //    @RequestMapping(value = "/user", method = RequestMethod.GET)
 //    public List<User> query(@RequestParam(name = "nickname", defaultValue = "Glenn", required = false) String username) {
@@ -44,7 +70,7 @@ public class UserController {
 //    }
 
     //@RequestMapping(value = "/user", method = RequestMethod.GET)
-    @GetMapping()
+    @GetMapping
     //传递一个封装了分页信息的对象Pageable,包括: page(第几页), size(查询几条),offset. sort(怎么排序)
     @JsonView(User.UserSimpleView.class)
     public List<User> query(UserQueryCondition condition, @PageableDefault(page = 3, size = 20, sort = "username,asc") Pageable pageable) {

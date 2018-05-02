@@ -13,6 +13,8 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 
+import java.util.Date;
+
 /**
  * @author Glenn.Zheng
  * @date 2018/4/29 10:41
@@ -70,5 +72,18 @@ public class UserControllerTest {
         mockMvc.perform(MockMvcRequestBuilders.get("/user/a")
                 .contentType(MediaType.APPLICATION_JSON_UTF8))
                 .andExpect(MockMvcResultMatchers.status().is4xxClientError());
+    }
+
+    @Test
+    public void whenCreateUserSuccess() throws Exception {
+        Date date = new Date();
+        System.out.println("date: " + date.getTime());
+        String content = "{\"username\":\"glenn\",\"password\":null,\"birthday\": "+date.getTime()+"}";
+        String result = mockMvc.perform(MockMvcRequestBuilders.post("/user").contentType(MediaType.APPLICATION_JSON_UTF8)
+                .content(content))
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.id").value("1"))
+                .andReturn().getResponse().getContentAsString();
+        System.out.println("user: " + result);
     }
 }
