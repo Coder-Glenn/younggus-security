@@ -2,13 +2,14 @@ package cn.younggus.web.controller;
 
 import cn.younggus.dto.User;
 import cn.younggus.dto.UserQueryCondition;
+import com.fasterxml.jackson.annotation.JsonView;
 import org.apache.commons.lang.builder.ReflectionToStringBuilder;
 import org.apache.commons.lang.builder.ToStringStyle;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.ArrayList;
@@ -19,11 +20,11 @@ import java.util.List;
  * @date 2018/4/29 10:52
  */
 @RestController //标明此controller用于提供Rest API
+@RequestMapping(value = "/user")
 public class UserController {
 
 //    @RequestMapping(value = "/user", method = RequestMethod.GET)
 //    public List<User> query(@RequestParam(name = "nickname", defaultValue = "Glenn", required = false) String username) {
-//        System.out.println(username);
 //        List<User> users = new ArrayList<>();
 //        users.add(new User());
 //        users.add(new User());
@@ -42,8 +43,10 @@ public class UserController {
 //        return users;
 //    }
 
-    @RequestMapping(value = "/user", method = RequestMethod.GET)
+    //@RequestMapping(value = "/user", method = RequestMethod.GET)
+    @GetMapping()
     //传递一个封装了分页信息的对象Pageable,包括: page(第几页), size(查询几条),offset. sort(怎么排序)
+    @JsonView(User.UserSimpleView.class)
     public List<User> query(UserQueryCondition condition, @PageableDefault(page = 3, size = 20, sort = "username,asc") Pageable pageable) {
         System.out.println(ReflectionToStringBuilder.toString(condition, ToStringStyle.MULTI_LINE_STYLE));
         System.out.println(pageable.getPageNumber());
@@ -54,5 +57,14 @@ public class UserController {
         users.add(new User());
         users.add(new User());
         return users;
+    }
+
+    //@RequestMapping(value = "/user/{id:\\d+}", method = RequestMethod.GET)
+    @GetMapping(value = "/{id:\\d+}")
+    @JsonView(User.UserDetailView.class)
+    public User getUserDetailInfo(@PathVariable(value = "id", required = true) String userId) {
+        User user = new User();
+        user.setUsername("glenn");
+        return user;
     }
 }

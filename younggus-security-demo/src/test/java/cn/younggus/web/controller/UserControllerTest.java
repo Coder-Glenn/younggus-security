@@ -38,7 +38,7 @@ public class UserControllerTest {
         /**
          * mockMvc.perform()发送请求
          */
-        mockMvc.perform(MockMvcRequestBuilders.get("/user")
+        String result = mockMvc.perform(MockMvcRequestBuilders.get("/user")
                 .param("username", "Glenn")
 //                .param("nickname", "Shawna")
                 .param("age", "18")
@@ -50,6 +50,25 @@ public class UserControllerTest {
                 .contentType(MediaType.APPLICATION_JSON_UTF8))
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 // jsonPath用于处理返回的Json内容, $代表整个json文档, expectedValue代表期待的长度
-                .andExpect(MockMvcResultMatchers.jsonPath("$.length()").value(3));
+                .andExpect(MockMvcResultMatchers.jsonPath("$.length()").value(3))
+                .andReturn().getResponse().getContentAsString();
+        System.out.println(result);
+    }
+
+    @Test
+    public void whenGetDetailInfoSuccess() throws Exception {
+        String result = mockMvc.perform(MockMvcRequestBuilders.get("/user/1")
+                .contentType(MediaType.APPLICATION_JSON_UTF8))
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.username").value("glenn"))
+                .andReturn().getResponse().getContentAsString();
+        System.out.println(result);
+    }
+
+    @Test
+    public void whenGetDetailInfoFail() throws Exception {
+        mockMvc.perform(MockMvcRequestBuilders.get("/user/a")
+                .contentType(MediaType.APPLICATION_JSON_UTF8))
+                .andExpect(MockMvcResultMatchers.status().is4xxClientError());
     }
 }
