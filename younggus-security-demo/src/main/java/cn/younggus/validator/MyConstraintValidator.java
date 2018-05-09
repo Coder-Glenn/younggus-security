@@ -21,12 +21,13 @@ public class MyConstraintValidator implements ConstraintValidator<MyConstraint, 
 
     @Override
     public void initialize(MyConstraint myConstraint) {
+        // singleton
         System.out.println("my validator init");
     }
 
     @Override
     public boolean isValid(Object value, ConstraintValidatorContext constraintValidatorContext) {
-        testService.greeting("glenn");
+        System.out.println(testService.greeting("glenn"));
         System.out.println(value);
         return false;
     }

@@ -12,3 +12,9 @@
 1. 常用的参数验证注解(@Valid @RequestBody User user, BindingResult errors)
 2. 自定义错误处理消息(@NotBlank(message = "密码不能为空"))
 3. 自定义校验注解(ConstraintValidator<MyConstraint, Object>)
+
+**RESTful API错误处理**
+1. Spring Boot中默认的错误处理机制
+2. 自定义异常处理(@ControllerAdvice, @ExceptionHandler(UserNotExistException.class))
+
+

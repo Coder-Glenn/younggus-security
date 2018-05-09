@@ -2,6 +2,7 @@ package cn.younggus.web.controller;
 
 import cn.younggus.dto.User;
 import cn.younggus.dto.UserQueryCondition;
+import cn.younggus.exception.UserNotExistException;
 import com.fasterxml.jackson.annotation.JsonView;
 import org.apache.commons.lang.builder.ReflectionToStringBuilder;
 import org.apache.commons.lang.builder.ToStringStyle;
@@ -37,12 +38,12 @@ public class UserController {
      * we will use @Valid and BindingResult together,
      * valid result will collected by BindingResult
      * @param user
-     * @param errors
+     * @param //error
      * @return
      */
     @PostMapping
     public User crete(@Valid @RequestBody User user, BindingResult errors) {
-
+            logger.info("create");
         if (errors.hasErrors()) {
             errors.getAllErrors().stream().forEach(error -> System.out.println(error.getDefaultMessage() ));
         }
@@ -100,14 +101,15 @@ public class UserController {
     //传递一个封装了分页信息的对象Pageable,包括: page(第几页), size(查询几条),offset. sort(怎么排序)
     @JsonView(User.UserSimpleView.class)
     public List<User> query(UserQueryCondition condition, @PageableDefault(page = 3, size = 20, sort = "username,asc") Pageable pageable) {
+        logger.info("query");
         System.out.println(ReflectionToStringBuilder.toString(condition, ToStringStyle.MULTI_LINE_STYLE));
         System.out.println(pageable.getPageNumber());
         System.out.println(pageable.getPageSize());
         System.out.println(pageable.getSort());
         List<User> users = new ArrayList<>();
-        users.add(new User());
-        users.add(new User());
-        users.add(new User());
+        users.add(new User("1"));
+        users.add(new User("2"));
+        users.add(new User("3"));
         return users;
     }
 
@@ -115,9 +117,12 @@ public class UserController {
     @GetMapping(value = "/{id:\\d+}")
     @JsonView(User.UserDetailView.class)
     public User getUserDetailInfo(@PathVariable(value = "id", required = true) String userId) {
-        User user = new User();
-        user.setUsername("glenn");
-        return user;
+        logger.info("getUserDetailInfo");
+        throw new UserNotExistException(userId);
+
+//        User user = new User("1");
+//        user.setUsername("glenn");
+//        return user;
     }
 
     @DeleteMapping("/{id:\\d+}")

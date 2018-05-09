@@ -21,6 +21,14 @@ public class User {
     public interface UserSimpleView {};
     public interface UserDetailView extends UserSimpleView {};
 
+    public User() {
+
+    }
+
+    public User(String id) {
+        this.id = id;
+    }
+
     private String id;
 
     @MyConstraint(message = "这是一个测试")
