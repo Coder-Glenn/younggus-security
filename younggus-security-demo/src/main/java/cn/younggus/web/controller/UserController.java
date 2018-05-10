@@ -23,6 +23,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.Valid;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -118,11 +119,13 @@ public class UserController {
     @JsonView(User.UserDetailView.class)
     public User getUserDetailInfo(@PathVariable(value = "id", required = true) String userId) {
         logger.info("getUserDetailInfo");
-        throw new UserNotExistException(userId);
-
-//        User user = new User("1");
-//        user.setUsername("glenn");
-//        return user;
+//        throw new UserNotExistException(userId);
+//        throw new RuntimeException("test runtimeException");
+        User user = new User("1");
+        user.setUsername("glenn");
+        user.setPassword("123");
+        user.setBirthday(new Date());
+        return user;
     }
 
     @DeleteMapping("/{id:\\d+}")

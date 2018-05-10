@@ -17,4 +17,8 @@
 1. Spring Boot中默认的错误处理机制
 2. 自定义异常处理(@ControllerAdvice, @ExceptionHandler(UserNotExistException.class))
 
+**RESTful API的拦截**
+1. 过滤器(Filter), 由java servlet提供，可以过滤所有的web请求并获取请求和响应的信息，但是无法获取方法的任何信息
+2. 拦截器(Interceptor), 由spring提供支持,拦截所有controller的方法调用，可以获取方法名，但无法获取方法的参数信息
+3. 切片(Aspect), 由spring提供支持，可以获取controller的参数信息,但无法获取request和response的信息
 
