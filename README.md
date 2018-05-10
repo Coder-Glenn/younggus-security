@@ -22,3 +22,7 @@
 2. 拦截器(Interceptor), 由spring提供支持,拦截所有controller的方法调用，可以获取方法名，但无法获取方法的参数信息
 3. 切片(Aspect), 由spring提供支持，可以获取controller的参数信息,但无法获取request和response的信息
 
+**Spring Boot中的文件上传下载**
+1. 文件上传
+2. 文件下载
+
