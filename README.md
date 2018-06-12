@@ -34,3 +34,7 @@ Spring Security
     - 处理用户信息获取逻辑(UserDetailService)
     - 处理用户信息校验逻辑(UserDetail的4个方法)
     - 处理密码加密解密(org.springframework.security.crypto.password.PasswordEncoder)
+3. 个性化用户认证流程
+    - 自定义登录页面(UsernamePasswordAuthenticationFilter)
+    - 自定义登录成功处理(AuthenticationSuccessHandler)
+    - 自定义登录失败处理
