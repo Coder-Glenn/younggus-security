@@ -1,7 +1,7 @@
 package cn.younggus.security.browser.controller;
 
 import cn.younggus.security.browser.message.SimpleResponse;
-import cn.younggus.config.SecurityProperties;
+import cn.younggus.security.core.config.SecurityProperties;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

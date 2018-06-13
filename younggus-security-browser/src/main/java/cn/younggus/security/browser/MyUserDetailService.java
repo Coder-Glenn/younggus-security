@@ -46,9 +46,9 @@ public class MyUserDetailService implements UserDetailsService {
 //        public boolean isCredentialsNonExpired() {
 //            return this.credentialsNonExpired;
 //        }
-        String password = passwordEncoder.encode("password1234");
+        String password = passwordEncoder.encode("password");
         System.out.println("password=" + password);
-        return new User(username, passwordEncoder.encode("password1234"), true, true, true, true, AuthorityUtils.commaSeparatedStringToAuthorityList("admin"));
+        return new User(username, passwordEncoder.encode("password"), true, true, true, true, AuthorityUtils.commaSeparatedStringToAuthorityList("admin"));
 //      return new User(username, "password1234", AuthorityUtils.commaSeparatedStringToAuthorityList("admin"));
     }
 }
