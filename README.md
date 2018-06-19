@@ -68,3 +68,25 @@ Spring Security
     - 自定义登录页面(UsernamePasswordAuthenticationFilter)
     - 自定义登录成功处理(AuthenticationSuccessHandler)
     - 自定义登录失败处理(AuthenticationFailureHandler)
+4. 源码解读：
+    UsernamePasswordAuthencationProvider中创建UsernamePasswordAuthenticationToken，这个token中包含了未认证的用户的基本信息(username, password等），之后获取authenticationManager进行下一步的认证，authenticationManager的默认实现是ProviderManager，这个manager会拿到所有的provider进行下一步的认证，针对不同的登录方式，有不同的provider，比如用户名密码表单登录，默认是由DaoAuthenticationProvider对usernamepasswordAuthenticationToken进行认证，而针对第三方如微信登录则是由SocialAuthenticaitonProvider对SocialAuthenticationToken进行认证，有不同的provider去做认证。
+    DaoAuthenticationProvider继承AbstractUserDetailsAuthenticationProvider，主要的校验逻辑由AbstractUserDetailsAuthenticationProvider的authenticate方法实现，这个方法通过retrieveUser获取了一个UserDetails对象，retrieveUser是一个抽象方法，具体的实现由DaoAuthenticationProvider完成，在DaoAuthenticationProvider中的retrieveUser的方法中，loadedUser=this.getUserDetailsService().loadUserByUsername(username);
+    通过得到userDetailService从数据库中获取一个userDeatil对象，这个service可以自己实现。
+    AbstractUserDetailsAuthenticationProvider的authenticate方法中，获取完用户信息 之后，
+    this.preAuthenticationChecks.check(user);
+    this.additionalAuthenticationChecks(user,(UsernamePasswordAuthenticationToken)authentication);
+    this.postAuthenticationChecks.check(user);
+    这三个方法完成了对用户认证，pre完成了lock, isEnable, accoutExpired的判断
+    additionalCheck完成了对密码的验证，这个密码是加密的密码
+    
+    
+    post完成了credentials的验证。Lock, isEnable, accountExpired, credentials都是UserDetails对象的属性。
+    最后创建一个新的UsernamePasswordAuthenticationToken，这个token相比于刚开始的token是认证过的，并且保存了用户的权限信息。
+    UsernamePasswordAuthencationProvider继承了AbstractAuthenticationProcessingFilter，这个filter中的doFilter方法完成了UsernamePasswordAuthencationProvider中attemptAuthentication的操作。拿到认证过的Authentication以后，
+    
+    调用了successfulAuthentication方法（图片最后一行），这个方法调用了successHandler。
+    同时在认证过程中的任何异常都会在此捕获。
+    
+    同时在成功认证以后，Authentication被放入到SecurityContext中，再放入到SecrityContextHolder（ThreadLocal的一个封装）以实现authentication认证结果在多个请求中共享。
+    
+    在UsernamePasswordAuthentication之前还有一个过滤器叫做SecurityContextPersistenceFilter，这个filter是在整个过滤器链的最前端，在请求进来时，首先检查session中是否有securityContext，如果有，那么拿出来放到线程里，在请求结束以后，再检查线程中是否有securityContext，如果有，则放到session里

@@ -1,7 +1,6 @@
 package cn.younggus.security.core.config;
 
 import org.springframework.boot.context.properties.ConfigurationProperties;
-import org.springframework.stereotype.Component;
 
 /**
  * 该类用于读取application.properties中所有以security开头的配置

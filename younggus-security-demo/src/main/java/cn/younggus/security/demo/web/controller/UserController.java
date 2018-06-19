@@ -9,6 +9,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -33,6 +37,25 @@ import java.util.List;
 public class UserController {
 
     private Logger logger = LoggerFactory.getLogger(getClass());
+
+    @GetMapping("/currentUser")
+    public Object getCurrentUser() {
+        return SecurityContextHolder.getContext().getAuthentication();
+    }
+
+    @GetMapping("/me")
+    public Object getCurrentUserInfo(Authentication authentication) {
+        //直接返回的效果同上：Spring Security会自动从securityContext中获取authentication对象。
+        return authentication;
+    }
+
+    @GetMapping("/userDetail")
+    public Object getCurrentUserDetail(@AuthenticationPrincipal UserDetails user) {
+        //只返回Authentication中的Principal
+        return user;
+    }
+
+
     /**
      * we will use @Valid and BindingResult together,
      * valid result will collected by BindingResult
