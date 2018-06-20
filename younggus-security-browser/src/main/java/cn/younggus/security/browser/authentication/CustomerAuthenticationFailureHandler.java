@@ -1,5 +1,6 @@
 package cn.younggus.security.browser.authentication;
 
+import cn.younggus.security.browser.message.SimpleResponse;
 import cn.younggus.security.core.config.LoginType;
 import cn.younggus.security.core.config.SecurityProperties;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -8,7 +9,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.AuthenticationException;
-import org.springframework.security.web.authentication.AuthenticationFailureHandler;
 import org.springframework.security.web.authentication.SimpleUrlAuthenticationFailureHandler;
 import org.springframework.stereotype.Component;
 
@@ -46,7 +46,7 @@ public class CustomerAuthenticationFailureHandler extends SimpleUrlAuthenticatio
         if (LoginType.JSON.equals(securityProperties.getBrowserProperties().getLoginType())) {
             response.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
             response.setContentType("application/json;charset=UTF-8");
-            response.getWriter().write(objectMapper.writeValueAsString(exception));
+            response.getWriter().write(objectMapper.writeValueAsString(new SimpleResponse(exception.getMessage())));
         } else {
             super.onAuthenticationFailure(request, response, exception);
         }

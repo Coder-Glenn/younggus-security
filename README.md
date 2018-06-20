@@ -79,14 +79,15 @@ Spring Security
     这三个方法完成了对用户认证，pre完成了lock, isEnable, accoutExpired的判断
     additionalCheck完成了对密码的验证，这个密码是加密的密码
     
-    
     post完成了credentials的验证。Lock, isEnable, accountExpired, credentials都是UserDetails对象的属性。
     最后创建一个新的UsernamePasswordAuthenticationToken，这个token相比于刚开始的token是认证过的，并且保存了用户的权限信息。
     UsernamePasswordAuthencationProvider继承了AbstractAuthenticationProcessingFilter，这个filter中的doFilter方法完成了UsernamePasswordAuthencationProvider中attemptAuthentication的操作。拿到认证过的Authentication以后，
-    
     调用了successfulAuthentication方法（图片最后一行），这个方法调用了successHandler。
     同时在认证过程中的任何异常都会在此捕获。
-    
     同时在成功认证以后，Authentication被放入到SecurityContext中，再放入到SecrityContextHolder（ThreadLocal的一个封装）以实现authentication认证结果在多个请求中共享。
-    
     在UsernamePasswordAuthentication之前还有一个过滤器叫做SecurityContextPersistenceFilter，这个filter是在整个过滤器链的最前端，在请求进来时，首先检查session中是否有securityContext，如果有，那么拿出来放到线程里，在请求结束以后，再检查线程中是否有securityContext，如果有，则放到session里
+    
+5. 实现图片验证码功能
+    - 实现生成图形验证码接口
+    - 在认证流程中加入图形验证码校验
+    - 重构代码

@@ -1,6 +1,8 @@
 package cn.younggus.security.browser;
 
 import cn.younggus.security.core.config.SecurityProperties;
+import cn.younggus.security.core.filter.ValidateCodeFilter;
+import cn.younggus.security.core.validationcode.ValidateCodeController;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -10,6 +12,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.AuthenticationFailureHandler;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 /**
  * Spring Security配置入口
@@ -36,7 +39,13 @@ public class BrowserSecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
-        http.formLogin() //表单登录
+
+        ValidateCodeFilter validateCodeFilter = new ValidateCodeFilter();
+        validateCodeFilter.setAuthenticationFailureHandler(customerAuthenticationFailureHandler);
+
+        http
+            .addFilterBefore(validateCodeFilter, UsernamePasswordAuthenticationFilter.class)
+            .formLogin() //表单登录
             .loginPage("/authencation/require")  //登录页面
             .loginProcessingUrl("/authentication/form")  //登录请求
             .successHandler(customerAuthenticationSuccessHandler)
@@ -44,7 +53,10 @@ public class BrowserSecurityConfig extends WebSecurityConfigurerAdapter {
         //http.httpBasic()  //默认登录验证方式：弹出密码验证popover
             .and()
             .authorizeRequests()
-            .antMatchers("/authencation/require", securityProperties.getBrowserProperties().getLoginPage()).permitAll() //授权
+            .antMatchers("/authencation/require",
+                    securityProperties.getBrowserProperties().getLoginPage(),
+                    "/code/image")
+            .permitAll() //授权
             .anyRequest()  //所有请求都需要身份验证
             .authenticated()
             .and()
