@@ -35,7 +35,7 @@ public class CustomerAuthenticationSuccessHandler extends SavedRequestAwareAuthe
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException, ServletException {
         logger.info("登陆成功");
 
-        if (LoginType.JSON.equals(securityProperties.getBrowserProperties().getLoginType())) {
+        if (LoginType.JSON.equals(securityProperties.getBrowser().getLoginType())) {
             response.setContentType("application/json;charset=UTF-8");
             response.getWriter().write(objectMapper.writeValueAsString(authentication));
         } else {

@@ -7,16 +7,26 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
  * @author Glenn.Zheng
  * @date 2018/6/12 22:01
  */
-@ConfigurationProperties(prefix = "spring.security")
+@ConfigurationProperties(prefix = "youngguys.security")
 public class SecurityProperties {
 
     private BrowserProperties browser = new BrowserProperties();
 
-    public BrowserProperties getBrowserProperties() {
+    private ValidateCodeProperties validateCode = new ValidateCodeProperties();
+
+    public BrowserProperties getBrowser() {
         return browser;
     }
 
-    public void setBrowserProperties(BrowserProperties browser) {
+    public void setBrowser(BrowserProperties browser) {
         this.browser = browser;
+    }
+
+    public ValidateCodeProperties getValidateCode() {
+        return validateCode;
+    }
+
+    public void setValidateCode(ValidateCodeProperties validateCode) {
+        this.validateCode = validateCode;
     }
 }

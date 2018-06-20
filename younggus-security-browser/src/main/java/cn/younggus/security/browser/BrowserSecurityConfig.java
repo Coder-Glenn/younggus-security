@@ -42,6 +42,8 @@ public class BrowserSecurityConfig extends WebSecurityConfigurerAdapter {
 
         ValidateCodeFilter validateCodeFilter = new ValidateCodeFilter();
         validateCodeFilter.setAuthenticationFailureHandler(customerAuthenticationFailureHandler);
+        validateCodeFilter.setSecurityProperties(securityProperties);
+        validateCodeFilter.afterPropertiesSet();
 
         http
             .addFilterBefore(validateCodeFilter, UsernamePasswordAuthenticationFilter.class)
@@ -54,7 +56,7 @@ public class BrowserSecurityConfig extends WebSecurityConfigurerAdapter {
             .and()
             .authorizeRequests()
             .antMatchers("/authencation/require",
-                    securityProperties.getBrowserProperties().getLoginPage(),
+                    securityProperties.getBrowser().getLoginPage(),
                     "/code/image")
             .permitAll() //授权
             .anyRequest()  //所有请求都需要身份验证

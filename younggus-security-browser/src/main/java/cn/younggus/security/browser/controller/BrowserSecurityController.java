@@ -49,7 +49,7 @@ public class BrowserSecurityController {
             String targetUrl = savedRequest.getRedirectUrl();
             System.out.println("引发跳转的请求是：" + targetUrl);
             if (StringUtils.endsWithIgnoreCase(targetUrl, ".html")) {
-                redirectStrategy.sendRedirect(request, response, securityProperties.getBrowserProperties().getLoginPage());
+                redirectStrategy.sendRedirect(request, response, securityProperties.getBrowser().getLoginPage());
             }
         }
         return new SimpleResponse("访问的服务需要身份认证，请登录后重试...");
