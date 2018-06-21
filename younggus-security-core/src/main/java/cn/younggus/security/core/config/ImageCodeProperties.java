@@ -7,7 +7,7 @@ package cn.younggus.security.core.config;
 public class ImageCodeProperties {
 
     //验证码宽度
-    private int width = 70;
+    private int width = 45;
 
     //验证码高度
     private int height = 25;

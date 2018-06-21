@@ -2,17 +2,22 @@ package cn.younggus.security.browser;
 
 import cn.younggus.security.core.config.SecurityProperties;
 import cn.younggus.security.core.filter.ValidateCodeFilter;
-import cn.younggus.security.core.validationcode.ValidateCodeController;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.AuthenticationFailureHandler;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.security.web.authentication.rememberme.JdbcTokenRepositoryImpl;
+import org.springframework.security.web.authentication.rememberme.PersistentTokenRepository;
+
+import javax.sql.DataSource;
 
 /**
  * Spring Security配置入口
@@ -37,6 +42,21 @@ public class BrowserSecurityConfig extends WebSecurityConfigurerAdapter {
     @Autowired
     private AuthenticationFailureHandler customerAuthenticationFailureHandler;
 
+    @Autowired
+    private UserDetailsService userDetailsService;
+
+    @Qualifier("dataSource")
+    @Autowired
+    private DataSource dataSource;
+
+    @Bean
+    public PersistentTokenRepository persistentTokenRepository() {
+        JdbcTokenRepositoryImpl tokenRepository = new JdbcTokenRepositoryImpl();
+        tokenRepository.setDataSource(dataSource);
+//        tokenRepository.setCreateTableOnStartup(true);
+        return tokenRepository;
+    }
+
     @Override
     protected void configure(HttpSecurity http) throws Exception {
 
@@ -48,10 +68,15 @@ public class BrowserSecurityConfig extends WebSecurityConfigurerAdapter {
         http
             .addFilterBefore(validateCodeFilter, UsernamePasswordAuthenticationFilter.class)
             .formLogin() //表单登录
-            .loginPage("/authencation/require")  //登录页面
-            .loginProcessingUrl("/authentication/form")  //登录请求
-            .successHandler(customerAuthenticationSuccessHandler)
-            .failureHandler(customerAuthenticationFailureHandler)
+                .loginPage("/authencation/require")  //登录页面
+                .loginProcessingUrl("/authentication/form")  //登录请求
+                .successHandler(customerAuthenticationSuccessHandler)
+                .failureHandler(customerAuthenticationFailureHandler)
+            .and()
+            .rememberMe()
+                .tokenRepository(persistentTokenRepository())
+                .tokenValiditySeconds(securityProperties.getBrowser().getRememberMeSeconds())
+                .userDetailsService(userDetailsService)
         //http.httpBasic()  //默认登录验证方式：弹出密码验证popover
             .and()
             .authorizeRequests()
