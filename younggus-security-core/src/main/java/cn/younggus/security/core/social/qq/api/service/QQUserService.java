@@ -9,5 +9,5 @@ import cn.younggus.security.core.social.qq.api.domain.QQUser;
  */
 public interface QQUserService {
 
-    QQUser getUserInfo() throws Exception;
+    QQUser getUserInfo();
 }

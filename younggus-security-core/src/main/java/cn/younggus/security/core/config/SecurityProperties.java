@@ -1,5 +1,6 @@
 package cn.younggus.security.core.config;
 
+import org.springframework.boot.autoconfigure.social.SocialProperties;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 
 /**
@@ -13,6 +14,8 @@ public class SecurityProperties {
     private BrowserProperties browser = new BrowserProperties();
 
     private ValidateCodeProperties validateCode = new ValidateCodeProperties();
+
+    private SocialLoginProperties social = new SocialLoginProperties();
 
     public BrowserProperties getBrowser() {
         return browser;
@@ -28,5 +31,13 @@ public class SecurityProperties {
 
     public void setValidateCode(ValidateCodeProperties validateCode) {
         this.validateCode = validateCode;
+    }
+
+    public SocialLoginProperties getSocial() {
+        return social;
+    }
+
+    public void setSocial(SocialLoginProperties social) {
+        this.social = social;
     }
 }

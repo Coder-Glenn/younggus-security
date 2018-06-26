@@ -1,4 +1,4 @@
-package cn.younggus.security.browser;
+package cn.younggus.security.demo.service;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -9,6 +9,9 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.social.security.SocialUser;
+import org.springframework.social.security.SocialUserDetails;
+import org.springframework.social.security.SocialUserDetailsService;
 import org.springframework.stereotype.Component;
 
 /**
@@ -16,7 +19,7 @@ import org.springframework.stereotype.Component;
  * @date 2018/6/11 20:29
  */
 @Component
-public class MyUserDetailService implements UserDetailsService {
+public class MyUserDetailService implements UserDetailsService, SocialUserDetailsService {
 
     private Logger logger = LoggerFactory.getLogger(getClass());
 
@@ -47,8 +50,19 @@ public class MyUserDetailService implements UserDetailsService {
 //            return this.credentialsNonExpired;
 //        }
         String password = passwordEncoder.encode("password");
-        System.out.println("password=" + password);
+        System.out.println("表单登录password=" + password);
         return new User(username, passwordEncoder.encode("password"), true, true, true, true, AuthorityUtils.commaSeparatedStringToAuthorityList("admin"));
 //      return new User(username, "password1234", AuthorityUtils.commaSeparatedStringToAuthorityList("admin"));
+    }
+
+    @Override
+    public SocialUserDetails loadUserByUserId(String userId) throws UsernameNotFoundException {
+        //Spring Social会根据服务商提供的openId拿到user Id
+        logger.info("社交登录用户id = " + userId);
+        //根据ID查找用户信息
+        //根据用户信息判断用户是否被lock, 冻结等信息
+        String password = passwordEncoder.encode("password");
+        logger.info("数据库密码是：" + password);
+        return new SocialUser(userId, password, true, true, true, true, AuthorityUtils.commaSeparatedStringToAuthorityList("admin"));
     }
 }
